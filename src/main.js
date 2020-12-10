@@ -17,28 +17,34 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(VueRouter)
 
 
-import Login from './components/login.vue'
+// import Login from './components/login.vue'
 import Index from './components/index.vue'
 
 import "./static/css/common.css"
-
-let routes = [{
-        path: '/login',
-        component: Login
-    },
-    {
-        path: '/index',
-        component: Index
-    },
-]
-
+import routes from '@/static/js/router.js'
+// let routes = [
+//   {
+//     path: '/index',
+//     component: function (resolve) {
+//       require(['./components/index.vue'], resolve)
+//     }
+//   },
+// ]
+const originalPush = VueRouter.prototype.push;
+VueRouter.prototype.push = function push (location, onResolve, onReject) {
+  if (onResolve || onReject) {
+    return originalPush.call(this, location, onResolve, onReject);
+  }
+  return originalPush.call(this, location).catch(err => err);
+}
 let router = new VueRouter({
-    routes
+  routes
 })
 
 Vue.config.productionTip = false
 
 new Vue({
-    render: h => h(App),
-    router,
-}).$mount('#app')
+  render: h => h(App),
+  router,
+}).$mount('#App')
+
